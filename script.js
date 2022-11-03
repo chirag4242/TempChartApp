@@ -1,17 +1,16 @@
 addChart();
-const xlabels = [];
-const ylabels = [];
+
 async function addChart()
 {
-    await getData();
+    const data = await getData();
     const ctx = document.getElementById('myChart').getContext('2d');
     const myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: xlabels,
+            labels: data.xlabels,
             datasets: [{
-                label: 'Global average tempratre from 1880 to 2022',
-                data: ylabels,
+                label: 'Combined Land-Surface Air and Sea-Surface Water Temperature Anomalies in C°',
+                data: data.ylabels,
                 fill: false,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
@@ -35,20 +34,23 @@ async function addChart()
         options: {
             scales: {
                 y: {
-                    beginAtZero: true
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, ticks)
+                        {
+                            return value + "°";
+                        }
+                    }
                 }
             }
         }
     });
 }
 
-
-
-
-
-
 async function getData()
 {
+    const xlabels = [];
+    const ylabels = [];
     const resoponse = await fetch("./GLB.Ts+dSST.csv");
     const text = await resoponse.text();
     const table = text.split("\n").slice(1);
@@ -58,7 +60,7 @@ async function getData()
         const year = columns[0];
         xlabels.push(year);
         const temp = columns[1];
-        ylabels.push(temp);
-        console.log(year, temp);
+        ylabels.push(parseFloat(temp) + 14);
     })
+    return { xlabels, ylabels }
 }
