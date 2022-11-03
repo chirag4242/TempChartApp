@@ -8,6 +8,17 @@
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 </head>
+
 <body>
+    <script>
+        fetchTestData();
+        async function fetchTestData()
+        {
+            const resoponse = await fetch("./test.csv");
+            const text = await resoponse.text();
+            console.log(text);
+        }
+    </script>
 </body>
+
 </html>
